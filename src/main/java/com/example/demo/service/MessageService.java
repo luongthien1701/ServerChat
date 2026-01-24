@@ -27,12 +27,7 @@ public class MessageService {
         return messageRepository.findAllByChatRoom_Id(chatRoomId);
     }
     public List<MessengerResponse> findLikeContent(Long userId,String content) {
-        List<MessageDTO> list=messageRepository.findMessageInChatroom(userId,content);
-        List<MessengerResponse> responses=new ArrayList<>();
-        list.stream().forEach(mess->{
-            responses.add(new MessengerResponse(mess));
-        });
-        return responses;
+        return messageRepository.findMessageInChatroom(userId,content);
     }
     @Transactional
     public Message save(MessageDTO message) {

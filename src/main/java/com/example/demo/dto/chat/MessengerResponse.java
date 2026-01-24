@@ -10,14 +10,13 @@ import com.example.demo.model.Message;
 import java.sql.Timestamp;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class MessengerResponse {
     private Long id;
     private String content;
     private String fileUrl;
-    private String type;
-    private String status;
+    private Message.MessageType type;
+    private Message.MessageStatus status;
     private Timestamp sentAt;
     private Timestamp editedAt;
     private UserSummary sender;
@@ -27,7 +26,7 @@ public class MessengerResponse {
     public MessengerResponse(MessageDTO message) {
         this.content = message.getContent();
         this.fileUrl = message.getFileUrl();
-        this.type = message.getType().toString();
+        this.type = message.getType();
         this.sentAt = new Timestamp(System.currentTimeMillis());
         this.editedAt = new Timestamp(System.currentTimeMillis());
         this.groupId = message.getChatRoomId();
@@ -37,4 +36,30 @@ public class MessengerResponse {
                 null
         );
     }
+
+    public MessengerResponse(
+            Long id,
+            String content,
+            String fileUrl,
+            Message.MessageType type,
+            Message.MessageStatus status,
+            Timestamp sentAt,
+            Timestamp editedAt,
+            UserSummary sender,
+            Long groupId,
+            String groupName
+    ) {
+        this.id = id;
+        this.content = content;
+        this.fileUrl = fileUrl;
+        this.type = type;
+        this.status = status;
+        this.sentAt = sentAt;
+        this.editedAt = editedAt;
+        this.sender = sender;
+        this.groupId = groupId;
+        this.groupName = groupName;
+    }
+
+
 }

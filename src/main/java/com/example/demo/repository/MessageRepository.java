@@ -10,21 +10,56 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    //    List<Message> findAllByChatRoom_Id(@Param("chat_id") Long chatRoomId);
-    List<MessengerResponse> findAllByChatRoom_Id(@Param("chat_id") Long chatRoomId);
-
-    @Query(value = """
-                SELECT mess.id,mess.content,mess.file_url,mess.type,mess.status,mess.sent_at,mess.edit_at,new com.example.demo.dto.user.UserSummary(
-                        mess.sender_id,
+    @Query("""
+                SELECT new com.example.demo.dto.chat.MessengerResponse(
+                    mess.id,
+                    mess.content,
+                    mess.fileUrl,
+                    mess.type,
+                    mess.status,
+                    mess.sentAt,
+                    mess.editedAt,
+                    new com.example.demo.dto.user.UserSummary(
+                        mess.sender.id,
                         null,
                         null
-                    ),mess.chat_id,cr.name
-                FROM messages mess
-                JOIN chat_rooms cr ON mess.chat_id = cr.id
-                WHERE mess.sender_id = :userId
-                  AND mess.content LIKE CONCAT('%', :like, '%')
-            """, nativeQuery = true)
-    List<MessageDTO> findMessageInChatroom(@Param("userId") Long userId, @Param("like") String like);
+                    ),
+                    mess.chatRoom.id,
+                    mess.chatRoom.name
+                )
+                FROM Message mess
+                WHERE mess.chatRoom.id = :chatRoomId
+            """)
+    List<MessengerResponse> findAllByChatRoom_Id(@Param("chatRoomId") Long chatRoomId);
+
+
+    @Query("""
+                SELECT new com.example.demo.dto.chat.MessengerResponse(
+                    mess.id,
+                    mess.content,
+                    mess.fileUrl,
+                    mess.type,
+                    mess.status,
+                    mess.sentAt,
+                    mess.editedAt,
+                    new com.example.demo.dto.user.UserSummary(
+                        mess.sender.id,
+                        null,
+                        null
+                    ),
+                    mess.chatRoom.id,
+                    mess.chatRoom.name
+                )
+                FROM Message mess
+                JOIN mess.chatRoom
+                WHERE mess.sender.id = :userId
+                  AND mess.content LIKE %:like%
+            """)
+    List<MessengerResponse> findMessageInChatroom(
+            @Param("userId") Long userId,
+            @Param("like") String like
+    );
+
 
     Message save(Message message);
 }

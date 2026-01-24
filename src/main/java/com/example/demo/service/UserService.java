@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.dto.noti.Locate;
 import com.example.demo.dto.user.UserProfile;
+import com.example.demo.dto.user.UserRegisterRequest;
 import com.example.demo.dto.user.UserSummary;
 import com.example.demo.manager.LocateManager;
 import com.example.demo.model.Users;
 import com.example.demo.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,18 @@ public class UserService {
         return usersRepository.findByUsername(username);
     }
 
-    public Users save(Users users) {
-        return usersRepository.save(users);
+    public void save(UserRegisterRequest user) {
+        Users users=new Users();
+        users.setUsername(user.getUsername());
+        users.setPassword(user.getPassword());
+        users.setEmail(user.getEmail());
+        users.setPhone(user.getPhone());
+        users.setDisplayName(user.getDisplay_name());
+        users.setStatus("OFFLINE");
+        users.setLastLogin(new Timestamp(System.currentTimeMillis()));
+        users.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        users.setDeletedAt(false);
+        usersRepository.save(users);
     }
 
     public Users findByEmail(String email) {

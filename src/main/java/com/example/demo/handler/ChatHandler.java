@@ -113,7 +113,6 @@ public class ChatHandler extends TextWebSocketHandler {
         }
     }
 
-
     protected void handleChatMessage(WebSocketSession session, Map<String, Object> payload) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         MessageDTO dto = mapper.convertValue(payload, MessageDTO.class);

@@ -55,13 +55,7 @@ public class UserController {
             }
         else
         {
-            Users users=new Users();
-            users.setUsername(userRegisterRequest.getUsername());
-            users.setPassword(userRegisterRequest.getPassword());
-            users.setEmail(userRegisterRequest.getEmail());
-            users.setPhone(userRegisterRequest.getPhone());
-            users.setDisplayName(userRegisterRequest.getDisplay_name());
-            userService.save(users);
+            userService.save(userRegisterRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message","Tài khoản đăng kí thành công!!!"));
 
         }

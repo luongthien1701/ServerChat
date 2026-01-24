@@ -1,5 +1,6 @@
 package com.example.demo.dto.chat;
 
+import com.example.demo.model.Message;
 import lombok.Data;
 
 @Data
@@ -8,7 +9,6 @@ public class MessageDTO {
     private Long senderId;
     private String content;
     private String fileUrl;
-    private Type type;
+    private Message.MessageType type;
 
-    enum Type {TEXT, IMAGE, FILE }
 }
