@@ -1,6 +1,5 @@
 package com.example.demo.worker;
 
-import com.example.demo.model.Newsfeed;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
@@ -8,27 +7,28 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+
 @Component
 public class DBWorker {
-    private BlockingQueue<Dbtask> queue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<DbTask> queue = new LinkedBlockingQueue<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     @PostConstruct
-    public void start()
-    {
-        executorService.submit(()->{
-            while(true){
+    public void start() {
+        executorService.submit(() -> {
+            while (true) {
                 try {
-                    Dbtask task = (Dbtask)queue.take();
+                    DbTask task = queue.take();
                     task.execute();
-                }
-                catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
                 }
             }
         });
     }
-    public void submit(Dbtask task)
-    {
+
+    public void submit(DbTask task) {
         queue.offer(task);
     }
 }

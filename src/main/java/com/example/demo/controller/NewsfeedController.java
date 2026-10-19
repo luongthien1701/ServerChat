@@ -1,53 +1,63 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.common.ApiResponse;
+import com.example.demo.dto.common.IdResponse;
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostImageRequest;
 import com.example.demo.dto.post.UpdatePost;
 import com.example.demo.service.ImageService;
 import com.example.demo.service.NewsfeedService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/newsfeed")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NewsfeedController {
-    NewsfeedService newsfeedService;
-    ImageService imageService;
+
+    private final NewsfeedService newsfeedService;
+    private final ImageService imageService;
+
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getNewsfeed(@PathVariable Long userId){
-        return ResponseEntity.ok().body(newsfeedService.findAllByUserReceived(userId));
+    public ResponseEntity<List<PostDTO>> getNewsfeed(@PathVariable Long userId) {
+        return ResponseEntity.ok(newsfeedService.findAllByUserReceived(userId));
     }
+
     @GetMapping("/profile/{userId}")
-    public ResponseEntity<?> getProfile(@PathVariable Long userId){
-        return ResponseEntity.ok().body(newsfeedService.findAllPostsByUserId(userId));
+    public ResponseEntity<List<PostDTO>> getProfile(@PathVariable Long userId) {
+        return ResponseEntity.ok(newsfeedService.findAllPostsByUserId(userId));
     }
+
     @PostMapping
-    public ResponseEntity<?> saveNewsfeed(@RequestBody PostDTO postDTO){
-        long id=newsfeedService.addPost(postDTO);
-        return ResponseEntity.ok().body(Map.of("id",id));
+    public ResponseEntity<IdResponse> saveNewsfeed(@RequestBody PostDTO postDTO) {
+        long id = newsfeedService.addPost(postDTO);
+        return ResponseEntity.ok(new IdResponse(id));
     }
+
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deleteNewsfeed(@PathVariable int postId){
+    public ResponseEntity<ApiResponse> deleteNewsfeed(@PathVariable int postId) {
         newsfeedService.deletePost(postId);
-        return ResponseEntity.ok().body(Map.of("message","success"));
+        return ResponseEntity.ok(ApiResponse.success());
     }
+
     @PutMapping("/addlike")
-    public ResponseEntity<?> addLike(@RequestBody UpdatePost  updatePost){
+    public ResponseEntity<ApiResponse> addLike(@RequestBody UpdatePost updatePost) {
         newsfeedService.addLikePost(updatePost);
-        return ResponseEntity.ok().body(Map.of("message","success"));
+        return ResponseEntity.ok(ApiResponse.success());
     }
+
     @PutMapping("/removelike")
-    public ResponseEntity<?> dscLike(@RequestBody UpdatePost  updatePost){
+    public ResponseEntity<ApiResponse> dscLike(@RequestBody UpdatePost updatePost) {
         newsfeedService.dscLikePost(updatePost);
-        return ResponseEntity.ok().body(Map.of("message","success"));
+        return ResponseEntity.ok(ApiResponse.success());
     }
+
     @PostMapping("/image")
-    public ResponseEntity<?> uploadImage(@RequestBody PostImageRequest  postImageRequest){
+    public ResponseEntity<ApiResponse> uploadImage(@RequestBody PostImageRequest postImageRequest) {
         imageService.save(postImageRequest);
-        return ResponseEntity.ok().body(Map.of("message","success"));
+        return ResponseEntity.ok(ApiResponse.success());
     }
 }

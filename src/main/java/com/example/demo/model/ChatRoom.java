@@ -38,7 +38,7 @@ public class ChatRoom {
     @JsonIgnore
     private List<Message> messages;
 
-    @Column(name = "uniquekey")
+    @Column(name = "unique_key")
     private String uniquekey;
 
     @Column(name = "created_at")

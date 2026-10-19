@@ -1,43 +1,42 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.common.ApiResponse;
+import com.example.demo.dto.common.IdResponse;
 import com.example.demo.dto.post.CommentDTO;
 import com.example.demo.service.CommentService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
-@AllArgsConstructor
-@NoArgsConstructor
 @RequestMapping("/api/comment")
+@RequiredArgsConstructor
 public class CommentController {
-    @Autowired
-    CommentService commentService;
+
+    private final CommentService commentService;
+
     @GetMapping("/{newsfeed_id}")
-    public ResponseEntity<?> getComment(@PathVariable("newsfeed_id") Long newsfeed_id)
-    {
-        return ResponseEntity.ok().body(commentService.findAllByNewsfeed_Id(newsfeed_id));
+    public ResponseEntity<List<CommentDTO>> getComment(@PathVariable("newsfeed_id") Long newsfeedId) {
+        return ResponseEntity.ok(commentService.findAllByNewsfeed_Id(newsfeedId));
     }
-    @PostMapping()
-    public  ResponseEntity<?> addComment(@RequestBody CommentDTO commentDTO)
-    {
-        long id=commentService.addComment(commentDTO);
-        return ResponseEntity.ok().body(Map.of("id",id));
+
+    @PostMapping
+    public ResponseEntity<IdResponse> addComment(@RequestBody CommentDTO commentDTO) {
+        long id = commentService.addComment(commentDTO);
+        return ResponseEntity.ok(new IdResponse(id));
     }
+
     @DeleteMapping("/{commentId}")
-    public  ResponseEntity<?> deleteComment(@PathVariable Long commentId)
-    {
+    public ResponseEntity<ApiResponse> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
-        return ResponseEntity.ok().body(Map.of("message","success"));
+        return ResponseEntity.ok(ApiResponse.success());
     }
-    @PutMapping()
-    public ResponseEntity<?> updateComment(@RequestBody CommentDTO commentDTO)
-    {
+
+    @PutMapping
+    public ResponseEntity<ApiResponse> updateComment(@RequestBody CommentDTO commentDTO) {
         commentService.updateComment(commentDTO);
-        return ResponseEntity.ok().body(Map.of("message","success"));
+        return ResponseEntity.ok(ApiResponse.success());
     }
 }
