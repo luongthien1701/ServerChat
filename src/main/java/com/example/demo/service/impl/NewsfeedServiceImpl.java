@@ -87,7 +87,6 @@ public class NewsfeedServiceImpl implements NewsfeedService {
 
     @Override
     public void dscLikePost(UpdatePost updatePost) {
-        System.out.println(updatePost.getPostId() + "" + updatePost.getUserId());
         if (!likeRepository.existsByNewsfeedIdAndUserId(updatePost.getPostId(), updatePost.getUserId())) {
             throw new RuntimeException("Đã xảy ra lỗi");
         }

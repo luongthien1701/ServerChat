@@ -11,6 +11,7 @@ import com.example.demo.worker.DBWorker;
 import com.example.demo.worker.SaveMessageTask;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -23,6 +24,7 @@ import java.util.Set;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageEventProcessor {
 
     private final MessageService messageService;
@@ -40,7 +42,7 @@ public class ChatMessageEventProcessor {
             WebSocketSession userSession = GlobalOnlineManager.getSession(userId);
             if (userSession != null && userSession.isOpen()) {
                 if (ChatSessionManager.isUserInRoom(userId, dto.getChatRoomId())) {
-                    System.out.println(userId);
+                    log.info("User {} is already in room", userId);
                     messageSender.sendEvent(userSession, "message", response);
                 }
             }

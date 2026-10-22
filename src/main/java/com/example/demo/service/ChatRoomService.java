@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface ChatRoomService {
-    List<ChatRoomDTO> GetallRoomById(Long id);
+    List<ChatRoomDTO> getAllRoomById(Long id);
     List<ChatRoom> findbylikeName(Long userId, String like);
     ChatRoomDTO findbyConvervationId(Long convervationId);
     Long findRoom(Long userId, Long friendId);

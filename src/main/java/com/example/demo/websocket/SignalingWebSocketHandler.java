@@ -1,5 +1,6 @@
 package com.example.demo.websocket;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Slf4j
 public class SignalingWebSocketHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> sessions =
@@ -18,9 +20,7 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.put(session.getId(), session);
 
-        System.out.println(
-                "Client connected: " + session.getId()
-        );
+        log.info("Connected to web socket session {}", session.getId());
     }
 
     @Override
@@ -31,9 +31,7 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
 
         String payload = message.getPayload();
 
-        System.out.println(
-                "Received from " + session.getId() + ": " + payload
-        );
+       log.info("Received message: " + payload);
 
         for (WebSocketSession other : sessions.values()) {
 
@@ -54,8 +52,6 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
     ) {
         sessions.remove(session.getId());
 
-        System.out.println(
-                "Client disconnected: " + session.getId()
-        );
+        log.info("Client disconnected: " + session.getId());
     }
 }

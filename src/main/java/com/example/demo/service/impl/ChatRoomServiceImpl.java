@@ -28,7 +28,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatSessionManager chatSessionManager;
 
     @Override
-    public List<ChatRoomDTO> GetallRoomById(Long id) {
+    public List<ChatRoomDTO> getAllRoomById(Long id) {
         List<ChatRoomDTO> rooms = chatRoomRepository.findAllByUserId(id);
         for (ChatRoomDTO dto : rooms) {
             String key = dto.getGroup();
@@ -128,7 +128,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         member.setChatRoom(room);
         member.setJoinedAt(new Timestamp(System.currentTimeMillis()));
         chatMemberRepository.save(member);
-        System.out.println("Đã chạy");
     }
 
     @Override

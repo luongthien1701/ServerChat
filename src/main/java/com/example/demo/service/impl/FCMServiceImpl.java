@@ -9,8 +9,7 @@ public class FCMServiceImpl implements FCMService {
 
     @Override
     public String sendMessage(String token, String content) throws FirebaseMessagingException {
-        System.out.println(token);
-        System.out.println(content);
+
         Message message = Message
                 .builder()
                 .setToken(token)

@@ -36,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public Message save(MessageDTO message) {
-        System.out.println(message);
+
         Users user = usersRepository.findById(message.getSenderId()).orElse(null);
         ChatRoom chatRoom = chatRoomRepository.findById(message.getChatRoomId()).orElse(null);
         if (chatRoom != null && user != null) {

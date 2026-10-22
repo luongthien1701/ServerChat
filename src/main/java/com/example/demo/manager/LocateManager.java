@@ -1,12 +1,13 @@
 package com.example.demo.manager;
 
 import com.example.demo.dto.noti.Locate;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+@Slf4j
 public class LocateManager {
     private static final Map<Long, Locate> locate = new ConcurrentHashMap<>();
 
@@ -23,7 +24,7 @@ public class LocateManager {
         } else {
             locate.put(userId, new Locate(lat,lon));
         }
-        System.out.println("addLocate " + userId + " " + lat + " " + lon);
+        log.info("Added locate for user {}", userId);
     }
 
     public static void removeLocate(Long userId) {

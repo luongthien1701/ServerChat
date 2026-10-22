@@ -21,7 +21,7 @@ public interface UsersRepository extends JpaRepository<Users,Long> {
             where u.id=:userId""",nativeQuery = true)
     UserSummary findUsersById(@Param("userId") Long id);
     @Query(value ="""
-            select u.id,u.display_name,u.email,u.password,u.phone
+            select u.id,u.display_name,u.email,u.phone
             from Users as u
             where u.id=:userId""",nativeQuery = true)
     UserProfile findUserProfilesById(@Param("userId") Long id);

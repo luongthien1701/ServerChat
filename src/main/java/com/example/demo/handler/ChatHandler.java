@@ -9,6 +9,7 @@ import com.example.demo.websocket.event.NotificationEventProcessor;
 import com.example.demo.websocket.event.RoomSessionEventProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 @AllArgsConstructor
 @Component
+@Slf4j
 public class ChatHandler extends TextWebSocketHandler {
 
     private final ChatMessageEventProcessor chatMessageProcessor;
@@ -32,12 +34,15 @@ public class ChatHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         try {
-            String query = session.getUri().getQuery();
-            Long userId = Long.parseLong(query.split("=")[1]);
+            Object userIdAttribute=session.getAttributes().get("userId");
+            if (!(userIdAttribute instanceof Long userId))
+            {
+                session.close();
+                return;
+            }
             GlobalOnlineManager.addOnlineUser(userId, session);
-            System.out.println("✅ [ChatHandler] User connected - UserId: " + userId);
         } catch (Exception e) {
-            System.out.println("❌ [ChatHandler] Error in afterConnectionEstablished: " + e.getMessage());
+            log.info(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -50,10 +55,9 @@ public class ChatHandler extends TextWebSocketHandler {
                 GlobalOnlineManager.removeOnlineUser(userId);
                 CallManager.removeUserFromAllCalls(userId);
                 LocateManager.removeLocate(userId);
-                System.out.println("✅ [ChatHandler] User disconnected - UserId: " + userId);
             }
         } catch (Exception e) {
-            System.out.println("❌ [ChatHandler] Error in afterConnectionClosed: " + e.getMessage());
+            log.info(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -65,7 +69,6 @@ public class ChatHandler extends TextWebSocketHandler {
             String event = (String) map.get("event");
             Map<String, Object> data = (Map<String, Object>) map.get("data");
 
-            System.out.println("📨 [ChatHandler] Received event: " + event + ", Data: " + data);
 
             switch (event) {
                 case "call_invite"     -> callEventProcessor.processCallInvite(session, data);
@@ -76,10 +79,10 @@ public class ChatHandler extends TextWebSocketHandler {
                 case "notification"    -> notificationProcessor.process(session, data);
                 case "join_room"       -> roomSessionProcessor.processJoinRoom(data);
                 case "leave_room"      -> roomSessionProcessor.processLeaveRoom(data);
-                default -> System.out.println("⚠️ [ChatHandler] Unknown event: " + event);
+                default -> log.info(event);
             }
         } catch (Exception e) {
-            System.out.println("❌ [ChatHandler] Error handling message: " + e.getMessage());
+            log.info(e.getMessage());
             e.printStackTrace();
         }
     }
